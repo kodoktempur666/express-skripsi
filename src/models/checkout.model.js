@@ -1,8 +1,21 @@
 import pool from '../config/db.js';
 
-const getAllCheckouts = async () => {
-    const result = await pool.query('SELECT * FROM checkouts');
-    return result.rows;
+const getCheckout = async () => {
+    const id = crypto.randomInt(1, 100);
+    const result = await pool.query(
+        'SELECT * FROM checkouts WHERE id = $1',
+        [id]
+    );
+    return result.rows[0];
+}
+
+const editCheckout = async (name, amount, item) => {
+    const id = crypto.randomInt(1, 100);
+    const result = await pool.query(
+        'UPDATE checkouts SET name = $1, amount = $2, item = $3 WHERE id = $4 RETURNING *',
+        [name, amount, item, id]
+    );
+    return result.rows[0];
 }
 
 const createCheckout = async (name, amount, item) => {
@@ -14,6 +27,7 @@ const createCheckout = async (name, amount, item) => {
 }
 
 export {
-    getAllCheckouts,
-    createCheckout
+    getCheckout,
+    createCheckout,
+    editCheckout
 };

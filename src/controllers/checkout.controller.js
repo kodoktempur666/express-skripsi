@@ -1,4 +1,4 @@
-import { createCheckout, getAllCheckouts } from "../models/checkout.model.js";
+import { createCheckout, getCheckout, editCheckout } from "../models/checkout.model.js";
 
 const handleResponse = (res, status, message, data = null) => {
     res.status(status).json({
@@ -20,9 +20,20 @@ export const insertCheckout = async (req, res, next) => {
 
 export const getCheckouts = async (req, res, next) => {
     try {
-        const allCheckpout = await getAllCheckouts();
-        handleResponse(res, 201, 'Checkout created successfully', allCheckpout);
+        const allCheckout = await getCheckout();
+        handleResponse(res, 201, 'Checkout created successfully', allCheckout);
     } catch (err) {
         next(err)
+    }
+}
+
+
+export const editCheckout = async (req, res, next) => {
+    try {
+        const { name, amount, item } = request.body;
+        const updatedCheckout = await editCheckout(name, amount, item);
+        handleResponse(res, 201, 'Checkout created successfully', updatedCheckout);
+    } catch (error) {
+        next(error)
     }
 }
