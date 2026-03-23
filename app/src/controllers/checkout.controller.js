@@ -8,7 +8,7 @@ const handleResponse = (res, status, message, data = null) => {
     });
 }
 
-export const insertCheckout = async (req, res, next) => {
+export const createCheckouts = async (req, res, next) => {
     const { name, amount, item } = req.body;
     try {
         const newCheckout = await createCheckout(name, amount, item);
@@ -28,7 +28,7 @@ export const getCheckouts = async (req, res, next) => {
 }
 
 
-export const editCheckout = async (req, res, next) => {
+export const editCheckouts = async (req, res, next) => {
     try {
         const { name, amount, item } = request.body;
         const updatedCheckout = await editCheckout(name, amount, item);
