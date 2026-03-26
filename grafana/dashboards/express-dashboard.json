@@ -82,8 +82,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 7,
+        "h": 14,
+        "w": 12,
         "x": 0,
         "y": 0
       },
@@ -108,7 +108,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(http_request_duration_seconds_count[1m])",
+          "expr": "sum by (job) (rate(http_request_duration_seconds_count[1m]))",
           "refId": "A"
         }
       ],
@@ -177,9 +177,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 7,
+        "h": 14,
+        "w": 12,
+        "x": 12,
         "y": 0
       },
       "id": 2,
@@ -203,11 +203,11 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[1m]))",
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le, job))",
           "refId": "A"
         }
       ],
-      "title": "Latency (P95)",
+      "title": "Latency P95",
       "type": "timeseries"
     },
     {
@@ -272,10 +272,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 7,
+        "h": 13,
+        "w": 12,
         "x": 0,
-        "y": 8
+        "y": 14
       },
       "id": 3,
       "options": {
@@ -298,11 +298,11 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum(rate(http_request_duration_seconds_count{status_code=~\"2..\"}[1m])) / sum(rate(http_request_duration_seconds_count[1m])) * 100",
+          "expr": "sum by (job) (rate(http_request_duration_seconds_count{status_code=~\"2..\"}[1m])) / sum by (job) (rate(http_request_duration_seconds_count[1m])) * 100",
           "refId": "A"
         }
       ],
-      "title": "Success Rate",
+      "title": "Success Rate (%)",
       "type": "timeseries"
     },
     {
@@ -367,10 +367,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 8,
-        "x": 7,
-        "y": 8
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 14
       },
       "id": 4,
       "options": {
@@ -393,11 +393,106 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
           "refId": "A"
         }
       ],
-      "title": "CPU Usage",
+      "title": "CPU Usage (%)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "refId": "A"
+        }
+      ],
+      "title": "RAM Usage (%)",
       "type": "timeseries"
     }
   ],
@@ -414,8 +509,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Express Monitoring",
+  "title": "Express vs Fastify Monitoring",
   "uid": "223a2e7d-6eb3-49bc-820e-bd904764bcc1",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
