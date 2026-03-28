@@ -1,15 +1,15 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import pool from './config/db.js';
-import checkoutRoute from './routes/checkout.route.js';
-import errorHandler from './middlewares/error.js';
-import client from 'prom-client';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import pool from "./config/db.js";
+import checkoutRoute from "./routes/checkout.route.js";
+import errorHandler from "./middlewares/error.js";
+import client from "prom-client";
 
 // konfigurasi dotenv
 dotenv.config();
 
-const app = express()
+const app = express();
 const port = process.env.PORT || 3001;
 
 // konfigurasi metrik prometheus
@@ -23,40 +23,36 @@ const httpRequestDuration = new client.Histogram({
 
 // middleware untuk mengukur durasi setiap request
 app.use((req, res, next) => {
-  const start = Date.now();
+  const start = process.hrtime();
 
   res.on("finish", () => {
-    const duration = (Date.now() - start) / 1000;
+    const diff = process.hrtime(start);
+    const duration = diff[0] + diff[1] / 1e9;
 
     httpRequestDuration
-      .labels(req.method, req.path, res.statusCode)
+      .labels(req.method, req.baseUrl + req.path, res.statusCode)
       .observe(duration);
   });
 
   next();
 });
 
-
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
-
-app.use('/checkout', checkoutRoute);
+app.use("/checkout", checkoutRoute);
 app.use(errorHandler);
 
-
-app.get('/', async (req, res) => {
-    const result = await pool.query('SELECT current_database()');
-    res.send(`Connected to database: ${result.rows[0].current_database}`);
-    
-})
+app.get("/", async (req, res) => {
+  const result = await pool.query("SELECT current_database()");
+  res.send(`Connected to database: ${result.rows[0].current_database}`);
+});
 
 app.get("/metrics", async (req, res) => {
   res.set("Content-Type", client.register.contentType);
   res.end(await client.register.metrics());
 });
 
-
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-})
+});
