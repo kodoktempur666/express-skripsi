@@ -22,4 +22,4 @@ scrape_configs:
   - job_name: "fastify-app-grpc"
     scrape_interval: 1s
     static_configs:
-      - targets: ["app:3015"]
+      - targets: ["fastify-grpc-api:3015"]
