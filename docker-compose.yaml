@@ -14,6 +14,13 @@ services:
       DB_NAME: mydb
     networks:
       - monitoring
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6378:6379"
+    networks:
+      - monitoring
 
   db:
     image: postgres:15
