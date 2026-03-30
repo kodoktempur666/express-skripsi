@@ -1,4 +1,4 @@
-import { createCheckout, getCheckout, editCheckout } from "../models/checkout.model.js";
+import { createCheckout, getCheckout, editCheckout, patchCheckout } from "../models/checkout.model.js";
 
 const handleResponse = (res, status, message, data = null) => {
     res.status(status).json({
@@ -19,21 +19,50 @@ export const createCheckouts = async (req, res, next) => {
 }
 
 export const getCheckouts = async (req, res, next) => {
-    try {
-        const allCheckout = await getCheckout();
-        handleResponse(res, 201, 'Checkout created successfully', allCheckout);
-    } catch (err) {
-        next(err)
-    }
-}
+  try {
+    const { id } = req.params;
+
+    const data = await getCheckout(id);
+
+    handleResponse(res, 200, "Checkout got successfully", data);
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 export const editCheckouts = async (req, res, next) => {
-    try {
-        const { name, amount, item } = request.body;
-        const updatedCheckout = await editCheckout(name, amount, item);
-        handleResponse(res, 201, 'Checkout created successfully', updatedCheckout);
-    } catch (error) {
-        next(error)
-    }
-}
+  try {
+    const { id } = req.params;
+    const { name, amount, item } = req.body;
+
+    const updatedCheckout = await editCheckout(
+      id,
+      name,
+      amount,
+      item
+    );
+
+    handleResponse(res, 200, "Checkout edited successfully", updatedCheckout);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const patchCheckouts = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, amount, item } = req.body;
+
+    const patchedCheckout = await patchCheckout(
+      id,
+      name ?? null,
+      amount ?? null,
+      item ?? null
+    );
+
+    handleResponse(res, 200, "Checkout patched successfully", patchedCheckout);
+  } catch (error) {
+    next(error);
+  }
+};
