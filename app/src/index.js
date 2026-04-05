@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import pool from "./config/db.js";
 import checkoutRoute from "./routes/checkout.route.js";
-import errorHandler from "./middlewares/error.js";
 import client from "prom-client";
 
 // konfigurasi dotenv
@@ -20,6 +19,15 @@ const httpRequestDuration = new client.Histogram({
   help: "HTTP request duration",
   labelNames: ["method", "route", "status_code"],
 });
+
+const errorHandler = (err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        status: 500,
+        message: 'Internal Server Error',
+        error: err.message
+    });
+}
 
 // middleware untuk mengukur durasi setiap request
 app.use((req, res, next) => {
