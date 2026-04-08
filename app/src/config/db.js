@@ -16,6 +16,11 @@ const pool = new Pool({
 
 pool.on('connect', () => {
     console.log('Connected to the database');
+    console.log(`Database: ${process.env.DB_NAME}`);
+    console.log(`User: ${process.env.DB_USER}`);
+    console.log(`Host: ${process.env.DB_HOST}`);
+    console.log(`Port: ${process.env.DB_PORT}`);
+    console.log(`password: ${process.env.DB_PASSWORD ? '********' : 'Not Set'}`);
 })
 
 export default pool;
