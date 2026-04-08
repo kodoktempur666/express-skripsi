@@ -6,12 +6,15 @@ services:
       - "3000:3000"
     environment:
       PORT: 3000
-      DB_HOST: db
+      DB_HOST: host.docker.internal
       DB_USER: postgres
-      DB_PASSWORD: postgres
+      DB_PASSWORD: psql
       DB_NAME: mydb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - monitoring
+      
   redis:
     image: redis:7
     container_name: redis
@@ -20,25 +23,25 @@ services:
     networks:
       - monitoring
 
-  db:
-    image: postgres:15
-    container_name: postgres_db
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mydb
-    ports:
-      - "5433:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - monitoring
+  # db:
+  #   image: postgres:15
+  #   container_name: postgres_db
+  #   restart: always
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: mydb
+  #   ports:
+  #     - "5433:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   networks:
+  #     - monitoring
 
 
   node-exporter:
