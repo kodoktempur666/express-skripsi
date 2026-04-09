@@ -4,24 +4,24 @@ services:
     container_name: express_app
     ports:
       - "3000:3000"
+    networks_mode: "host"
     environment:
       PORT: 3000
-      DB_HOST: host.docker.internal
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: psql
       DB_NAME: mydb
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     networks:
       - monitoring
       
-  redis:
-    image: redis:7
-    container_name: redis
-    ports:
-      - "6378:6379"
-    networks:
-      - monitoring
+  # redis:
+  #   image: redis:7
+  #   container_name: redis
+  #   ports:
+  #     - "6378:6379"
+  #   networks:
+  #     - monitoring
 
   # db:
   #   image: postgres:15
@@ -51,9 +51,6 @@ services:
       - "9100:9100"
     networks:
       - monitoring
-
-volumes:
-  pgdata:
 
 networks:
   monitoring:
