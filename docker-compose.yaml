@@ -4,7 +4,6 @@ services:
     container_name: express_app
     ports:
       - "3000:3000"
-    network_mode: "host"
     environment:
       PORT: 3000
       DB_HOST: 127.0.0.1
@@ -48,5 +47,4 @@ services:
     container_name: node_exporter
     ports:
       - "9100:9100"
-    network_mode: "host"
 
