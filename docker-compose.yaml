@@ -12,8 +12,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: psql
       DB_NAME: mydb
-    networks:
-      - monitoring
+
       
   # redis:
   #   image: redis:7
@@ -49,10 +48,5 @@ services:
     container_name: node_exporter
     ports:
       - "9100:9100"
-    networks:
-      - monitoring
+    network_mode: "host"
 
-networks:
-  monitoring:
-    name: monitoring
-    driver: bridge
